@@ -1,0 +1,30 @@
+{
+  "name": "multica-promo-video",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "setup": "bash scripts/setup.sh",
+    "studio": "remotion studio src/index.ts",
+    "build": "bash scripts/build.sh",
+    "sound": "audio/.venv/bin/python audio/sfx.py && audio/.venv/bin/python audio/music.py",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.538",
+    "@remotion/cli": "4.0.538",
+    "@remotion/light-leaks": "4.0.538",
+    "@remotion/motion-blur": "4.0.538",
+    "@remotion/paths": "4.0.538",
+    "@remotion/renderer": "4.0.538",
+    "lucide-react": "^1.61.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remotion": "4.0.538",
+    "simple-icons": "^16.35.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "typescript": "^7.0.2"
+  }
+}
