@@ -1,7 +1,8 @@
 import React from "react";
-import { Check, Minus, User, Users } from "lucide-react";
+import { Check, Minus, SquareTerminal, User, Users } from "lucide-react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { Backdrop, Grain, Vignette } from "../components/Atmos";
+import { ClientWindow } from "../components/ClientWindow";
 import { Board, layout } from "../components/Board";
 import { HL_STYLE } from "../components/Caption";
 import { Kinetic } from "../components/Kinetic";
@@ -41,13 +42,13 @@ export const S6CompareIntro: React.FC = () => {
         <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
           <div style={{ transform: `translateY(${mix(0, -380, q)}px) scale(${mix(1, 0.62, q)})` }}>
             <Kinetic
-              text={"已经有 Claude Code、Codex 了，\n为什么还需要 [Multica]？"}
+              text={"Claude Code、Codex 的终端和桌面客户端都很强，\n为什么还需要 [Multica]？"}
               start={4}
               align="center"
               stagger={1.8}
               lineGap={0.16}
               exit="none"
-              style={{ fontFamily: F.serif, fontWeight: 700, fontSize: 84, color: C.ink, lineHeight: 1.18 }}
+              style={{ fontFamily: F.serif, fontWeight: 700, fontSize: 74, color: C.ink, lineHeight: 1.2 }}
               hlStyle={HL_STYLE}
             />
           </div>
@@ -68,28 +69,34 @@ export const S6CompareIntro: React.FC = () => {
             opacity: Math.min(1, split * 1.4),
           }}
         >
-          <div style={{ position: "relative", height: 470, width: 700 }}>
+          <div style={{ position: "relative", height: 470, width: 720 }}>
+            <ClientWindow
+              provider="codex"
+              title="Codex"
+              sessions={["修复 webhook 重试", "给 API 加限流", "整理发布说明", "升级依赖"]}
+              prompt="修复 webhook 投递失败后疯狂重试的问题"
+              reply="好的，我先看看现有的重试实现，再补上指数退避。"
+              clock={100}
+              width={600}
+              height={372}
+              style={{ position: "absolute", left: 0, top: 0 }}
+            />
             <Terminal
               title="claude — ~/nebula/api"
               lines={[
                 { text: "> 修复 webhook 重试", at: 0, cps: Infinity },
                 { text: "⏺ Read(retry.go)", at: 0, cps: Infinity, color: "#8ab4ff" },
-                { text: "⏺ 需要你的确认：继续吗？(y/n)", at: 0, cps: Infinity, color: "#f5c46b" },
+                { text: "⏺ 需要你的确认：继续吗？", at: 0, cps: Infinity, color: "#f5c46b" },
               ]}
               clock={100}
-              width={640}
-              height={350}
-              fontSize={18}
+              width={430}
+              height={230}
+              fontSize={16}
               accent="#e58a66"
-              style={{ position: "absolute", left: 30, top: 0 }}
+              style={{ position: "absolute", left: 290, top: 226 }}
             />
-            <div style={{ position: "absolute", left: 312, top: 376, display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-              <div style={{ width: 70, height: 70, borderRadius: "50%", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.18)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <User size={36} color={C.inkSoft} />
-              </div>
-            </div>
           </div>
-          <SideLabel icon={<User size={30} />} title="单兵作战" sub="一个终端 · 一次会话 · 一个人盯着" o={tw(f, 130, 20)} accent={C.inkMute} />
+          <SideLabel icon={<User size={30} />} title="个人工具" sub="终端或桌面客户端 · 自家智能体 · 个人会话" o={tw(f, 130, 20)} accent={C.inkMute} />
         </div>
 
         <div
@@ -136,7 +143,7 @@ export const S6CompareIntro: React.FC = () => {
               ))}
             </div>
           </div>
-          <SideLabel icon={<Users size={30} />} title="团队协作" sub="一个工作区 · 一支团队 · 全程留痕" o={tw(f, 140, 20)} accent={C.brand} />
+          <SideLabel icon={<Users size={30} />} title="团队协作" sub="一个工作区 · 跨厂商智能体 · 全队共享" o={tw(f, 140, 20)} accent={C.brand} />
         </div>
       </AbsoluteFill>
       <Vignette strength={0.6} />
@@ -148,20 +155,34 @@ export const S6CompareIntro: React.FC = () => {
 
 // ------------------------------------------------------------ table
 
-const ROWS: Array<[string, string, string]> = [
-  ["工作单元", "终端里的一次会话", "工作区里的任务，人和智能体同一块看板"],
-  ["智能体", "一次驱动一个，各管各的", "27 款 CLI 混编成队，并行接活"],
-  ["上下文", "留在本地会话里，难以共享", "需求、执行、决策和 diff 都挂在任务上"],
-  ["你的角色", "守在终端前，一步步确认", "派活、验收，只在需要时拍板"],
-  ["团队协作", "个人工具", "成员角色、使用权限、审计记录"],
-  ["触发方式", "手动在终端里发起", "指派、@提及、Autopilot、聊天渠道"],
+// Fair comparison as of October 2026: the desktop clients already run sessions
+// in parallel, isolate them in worktrees and schedule work, so the rows below
+// only claim what still separates a team workspace from a personal client.
+const ROWS: Array<[string, string, string, string]> = [
+  ["工作单元", "一次终端会话", "一串会话 / 线程", "看板上的任务：状态、负责人、审核"],
+  ["智能体", "只有自家的，一次一个", "只有自家的，可并行多个", "27 款 CLI 跨厂商混编成队"],
+  ["上下文", "留在本地会话", "留在个人会话历史", "挂在任务上，全队都看得到"],
+  ["队友", "你和一个智能体", "你和你开的会话", "整个团队的人和智能体"],
+  ["运行位置", "本机", "本机或厂商云端", "你自己的任意机器，统一调度"],
+  ["平台", "厂商工具", "厂商应用", "源码公开，整套可自托管"],
 ];
-// Each row's check lands on a beat (ROW_AT + 8 = 30 + 60i).
+// Each row's Multica cell (and its check) lands on a beat: ROW_AT + 8 = 30 + 60i.
 const ROW_AT = (i: number) => 22 + i * 60;
-const LABEL_W = 220;
-const CLIENT_W = 560;
-const MULTICA_W = 820;
-const ROW_H = 104;
+const LABEL_W = 170;
+const CLI_W = 360;
+const APP_W = 400;
+const MULTICA_W = 700;
+const ROW_H = 100;
+
+const ColHead: React.FC<{ icon: React.ReactNode; title: string; sub: string; width: number }> = ({ icon, title, sub, width }) => (
+  <div style={{ width, display: "flex", alignItems: "center", gap: 14, paddingLeft: 22, boxSizing: "border-box" }}>
+    <div style={{ display: "flex", gap: 6 }}>{icon}</div>
+    <div style={{ fontFamily: F.sans, lineHeight: 1.25 }}>
+      <div style={{ fontSize: 25, color: C.inkSoft, fontWeight: 650 }}>{title}</div>
+      <div style={{ fontSize: 16, color: C.inkMute, fontWeight: 500, whiteSpace: "nowrap" }}>{sub}</div>
+    </div>
+  </div>
+);
 
 export const S6CompareTable: React.FC = () => {
   const f = useCurrentFrame();
@@ -170,24 +191,51 @@ export const S6CompareTable: React.FC = () => {
   const head = sp(f, fps, 4, { damping: 18, stiffness: 120 });
   const out = tw(f, dur - 16, 16, 0, 1, ease.in);
   const colGrow = tw(f, 22, ROWS.length * 60 + 10, 0, 1, ease.inOut);
-  const left = (1920 - (LABEL_W + CLIENT_W + MULTICA_W)) / 2;
-  const top = 270;
+  const total = LABEL_W + CLI_W + APP_W + MULTICA_W;
+  const left = (1920 - total) / 2;
+  const top = 250;
+  const mx = left + LABEL_W + CLI_W + APP_W;
+  const cell = (t: number): React.CSSProperties => ({
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    paddingLeft: 22,
+    boxSizing: "border-box",
+    fontSize: 25,
+    color: "rgba(245,247,250,0.55)",
+    opacity: t,
+    transform: `translateX(${(1 - t) * 26}px)`,
+    whiteSpace: "nowrap",
+  });
   return (
     <AbsoluteFill style={{ overflow: "hidden" }}>
       <Backdrop grid={0.03} glowA="#2f55d4" glowB="#3f2fd6" />
       <AbsoluteFill style={{ opacity: 1 - out, transform: `scale(${mix(1, 1.04, out)})` }}>
         {/* header */}
-        <div style={{ position: "absolute", left, top: top - 120, display: "flex", alignItems: "flex-end", opacity: Math.min(1, head * 1.4), transform: `translateY(${(1 - head) * 30}px)` }}>
+        <div style={{ position: "absolute", left, top: top - 112, display: "flex", alignItems: "center", opacity: Math.min(1, head * 1.4), transform: `translateY(${(1 - head) * 30}px)` }}>
           <div style={{ width: LABEL_W }} />
-          <div style={{ width: CLIENT_W, display: "flex", alignItems: "center", gap: 14, paddingLeft: 28 }}>
-            <LogoTile provider="claude" size={46} radius={12} />
-            <LogoTile provider="codex" size={46} radius={12} />
-            <div style={{ fontFamily: F.sans, fontSize: 26, color: C.inkSoft, fontWeight: 600, lineHeight: 1.2 }}>
-              Claude Code / Codex
-              <div style={{ fontSize: 18, color: C.inkMute, fontWeight: 500 }}>等终端客户端</div>
-            </div>
-          </div>
-          <div style={{ width: MULTICA_W, display: "flex", alignItems: "center", gap: 16, paddingLeft: 36 }}>
+          <ColHead
+            width={CLI_W}
+            title="终端 CLI"
+            sub="Claude Code · Codex CLI"
+            icon={
+              <div style={{ width: 44, height: 44, borderRadius: 11, background: "#11151d", border: "1px solid rgba(255,255,255,0.16)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <SquareTerminal size={24} color={C.inkSoft} />
+              </div>
+            }
+          />
+          <ColHead
+            width={APP_W}
+            title="桌面客户端"
+            sub="Claude 桌面端 · Codex App"
+            icon={
+              <>
+                <LogoTile provider="claude" size={44} radius={11} />
+                <LogoTile provider="codex" size={44} radius={11} />
+              </>
+            }
+          />
+          <div style={{ width: MULTICA_W, display: "flex", alignItems: "center", gap: 16, paddingLeft: 32 }}>
             <div style={{ width: 50, height: 50, borderRadius: 13, background: "#111827", border: "1px solid rgba(140,196,255,0.4)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 30px rgba(76,141,246,0.45)" }}>
               <MulticaMark size={28} />
             </div>
@@ -199,7 +247,7 @@ export const S6CompareTable: React.FC = () => {
         <div
           style={{
             position: "absolute",
-            left: left + LABEL_W + CLIENT_W,
+            left: mx,
             top: top - 14,
             width: MULTICA_W,
             height: (ROWS.length * ROW_H + 28) * colGrow,
@@ -210,18 +258,23 @@ export const S6CompareTable: React.FC = () => {
           }}
         />
 
-        {ROWS.map(([label, client, multica], i) => {
+        {ROWS.map(([label, cli, app, multica], i) => {
           const t = sp(f, fps, ROW_AT(i), { damping: 18, stiffness: 150 });
+          const ta = sp(f, fps, ROW_AT(i) + 4, { damping: 18, stiffness: 150 });
           const tm = sp(f, fps, ROW_AT(i) + 8, { damping: 15, stiffness: 170 });
           return (
             <div key={label} style={{ position: "absolute", left, top: top + i * ROW_H, height: ROW_H, display: "flex", alignItems: "center", fontFamily: F.sans }}>
               <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 1, background: "rgba(255,255,255,0.08)", transform: `scaleX(${t})`, transformOrigin: "0 0" }} />
-              <div style={{ width: LABEL_W, fontSize: 26, color: C.inkMute, letterSpacing: "0.12em", opacity: t, fontWeight: 500 }}>{label}</div>
-              <div style={{ width: CLIENT_W, display: "flex", alignItems: "center", gap: 14, paddingLeft: 28, fontSize: 28, color: "rgba(245,247,250,0.52)", opacity: t, transform: `translateX(${(1 - t) * 30}px)` }}>
-                <Minus size={22} color="rgba(245,247,250,0.32)" />
-                {client}
+              <div style={{ width: LABEL_W, fontSize: 23, color: C.inkMute, letterSpacing: "0.12em", opacity: t, fontWeight: 500 }}>{label}</div>
+              <div style={{ width: CLI_W, ...cell(t) }}>
+                <Minus size={18} color="rgba(245,247,250,0.3)" />
+                {cli}
               </div>
-              <div style={{ width: MULTICA_W, display: "flex", alignItems: "center", gap: 16, paddingLeft: 36, fontSize: 31, color: C.ink, fontWeight: 600, opacity: Math.min(1, tm * 1.3), transform: `translateX(${(1 - tm) * 40}px)` }}>
+              <div style={{ width: APP_W, ...cell(ta) }}>
+                <Minus size={18} color="rgba(245,247,250,0.3)" />
+                {app}
+              </div>
+              <div style={{ width: MULTICA_W, display: "flex", alignItems: "center", gap: 16, paddingLeft: 32, fontSize: 29, color: C.ink, fontWeight: 600, opacity: Math.min(1, tm * 1.3), transform: `translateX(${(1 - tm) * 40}px)`, whiteSpace: "nowrap" }}>
                 <div style={{ width: 30, height: 30, borderRadius: "50%", background: C.brand, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transform: `scale(${tm})`, boxShadow: "0 0 18px rgba(76,141,246,0.7)" }}>
                   <Check size={19} color="#fff" strokeWidth={3} />
                 </div>
@@ -230,6 +283,9 @@ export const S6CompareTable: React.FC = () => {
             </div>
           );
         })}
+        <div style={{ position: "absolute", left, top: top + ROWS.length * ROW_H + 34, fontFamily: F.sans, fontSize: 18, color: "rgba(245,247,250,0.42)", opacity: tw(f, 380, 30) }}>
+          客户端能力依据 2026 年 10 月公开资料；Multica 驱动的正是这些智能体的 CLI。
+        </div>
       </AbsoluteFill>
       <Vignette strength={0.55} />
       <Grain opacity={0.06} />

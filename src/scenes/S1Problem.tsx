@@ -1,6 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Sequence, useCurrentFrame, useVideoConfig } from "remotion";
 import { Backdrop, Grain, Vignette } from "../components/Atmos";
+import { ClientWindow } from "../components/ClientWindow";
 import { LowerCaption } from "../components/Caption";
 import { Sfx } from "../components/Sfx";
 import { TermLine, Terminal } from "../components/Terminal";
@@ -20,6 +21,8 @@ type Win = {
   close?: number;
   accent?: string;
   lines: TermLine[];
+  // Desktop-client windows (session sidebar + chat) instead of a terminal.
+  client?: { provider: string; title: string; sessions: string[]; prompt: string; reply: string };
 };
 
 const L = (text: string, at: number, cps = Infinity, extra: Partial<TermLine> = {}): TermLine => ({
@@ -104,8 +107,30 @@ const RING1: Win[] = [
 const RING2: Win[] = [
   { key: "copilot", title: "copilot — ~/nebula/mobile", x: 0, y: -660, at: 252, close: 404, lines: [L("$ copilot", 0, 0.6), L("GitHub Copilot CLI", 12, Infinity, { bold: true }), L("> 补齐移动端单元测试", 20, 0.9)] },
   { key: "qwen", title: "qwen — ~/nebula/infra", x: 20, y: 680, at: 266, close: 392, lines: [L("$ qwen", 0, 0.6), L("Qwen Code", 12, Infinity, { bold: true }), L("> 生成 OpenAPI 文档", 20, 0.9)] },
-  { key: "claude2", title: "claude — ~/nebula/web", x: -1320, y: -40, at: 280, close: 380, accent: ORANGE, lines: [L("$ claude", 0, 0.6), L("✻ Welcome to Claude Code!", 12, Infinity, { color: ORANGE }), L("> 修复移动端上传卡住", 20, 0.9)] },
-  { key: "codex2", title: "codex — ~/nebula/api", x: 1320, y: 20, at: 294, close: 416, lines: [L("$ codex resume", 0, 0.6), L(">_ OpenAI Codex", 14, Infinity, { bold: true }), L("› 继续昨天的重构？", 22, 0.9)] },
+  {
+    key: "claude2",
+    title: "Claude",
+    x: -1340,
+    y: -40,
+    at: 280,
+    close: 380,
+    w: 600,
+    h: 360,
+    lines: [],
+    client: { provider: "claude", title: "Claude", sessions: ["修复移动端上传卡住", "梳理会话恢复协议", "写周报"], prompt: "移动端上传为什么卡住？", reply: "我先看下上传队列的重试逻辑……" },
+  },
+  {
+    key: "codex2",
+    title: "Codex",
+    x: 1340,
+    y: 20,
+    at: 294,
+    close: 416,
+    w: 600,
+    h: 360,
+    lines: [],
+    client: { provider: "codex", title: "Codex", sessions: ["继续昨天的重构", "给 API 加限流", "升级依赖"], prompt: "继续昨天的重构", reply: "昨天的上下文我这里没有，能再说一下吗？" },
+  },
 ];
 
 // The four sessions that get re-briefed with the same context in phase E.
@@ -195,7 +220,11 @@ const WinView: React.FC<{ win: Win; f: number; fps: number; z: number }> = ({ wi
         filter: bright > 1.01 ? `brightness(${bright})` : undefined,
       }}
     >
-      <Terminal title={win.title} lines={win.lines} clock={win.at} width={w} height={h} accent={win.accent} />
+      {win.client ? (
+        <ClientWindow {...win.client} clock={win.at} width={w} height={h} />
+      ) : (
+        <Terminal title={win.title} lines={win.lines} clock={win.at} width={w} height={h} accent={win.accent} />
+      )}
     </div>
   );
 };
@@ -348,7 +377,7 @@ export const S1Problem: React.FC = () => {
       <Vignette strength={0.8} />
 
       <LowerCaption text="你已经在用 Claude Code、Codex……" start={22} end={230} />
-      <LowerCaption text="每一个，都关在自己的终端里。" start={240} end={352} />
+      <LowerCaption text="每一个，都关在自己的窗口里。" start={240} end={352} />
       <LowerCaption text="会话一关，什么都不记得。" start={362} end={472} />
       <LowerCaption text="同一段上下文，今天已经讲到[第 4 遍]。" start={482} end={594} />
       <LowerCaption text="智能体越加越多，[你越忙]。" start={604} end={706} size={72} hl={RED_HL} />

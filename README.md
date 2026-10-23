@@ -19,7 +19,7 @@ npm run build   # 渲染并母带处理，输出 out/multica-promo.mp4
 | 路径 | 作用 |
 | --- | --- |
 | `src/timeline.ts` | 120 BPM 节拍网格（1 拍 = 30 帧，1 小节 = 120 帧）与 17 个场景的起止小节 |
-| `src/scenes/` | 各场景：开场痛点、Logo 揭幕、看板、派活、7 个功能、与 Claude Code / Codex 的对比、片尾 |
+| `src/scenes/` | 各场景：开场痛点、Logo 揭幕、看板、派活、7 个功能、与 Claude Code / Codex 终端 CLI 和桌面客户端的对比、片尾 |
 | `src/components/` | 重建的产品 UI、终端、字幕动效、运镜、音效挂载（`Sfx.tsx` 含按测量校准的电平表） |
 | `src/brand/` | 从仓库复制的 Logo 与渠道图标 |
 | `audio/dsp.py` | 振荡器、包络、零延迟状态变量滤波器（numba）、效果器 |
