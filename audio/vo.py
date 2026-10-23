@@ -33,6 +33,11 @@ from scipy.signal import resample_poly
 
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = ROOT / "src" / "narration.json"
+MUSIC = ROOT / "public" / "audio" / "music.wav"
+# How the film places voice against music (src/Promo.tsx, src/vo.ts): narration
+# at +3 dB over its -17 dBFS level, music at 0.6 and ducked 9 dB under speech.
+VO_GAIN = 1.41
+MUSIC_UNDER_VO = 0.6 * 10 ** (-9 / 20)
 TIMING = ROOT / "src" / "vo-timing.json"
 OUT = ROOT / "public" / "vo"
 CACHE = ROOT / ".cache" / "vo" / "takes"
@@ -54,6 +59,8 @@ def units(text: str) -> list[str]:
 
 
 def phonemes(text: str) -> list[str]:
+    # ASR often spells initialisms out ("C L I", "C.L.I"); join them back up.
+    text = re.sub(r"(?<![A-Za-z])([A-Za-z])(?:[\s.]+([A-Za-z])(?![A-Za-z]))+", lambda m: re.sub(r"[\s.]", "", m.group(0)), text)
     out: list[str] = []
     for u in units(text):
         if u.isdigit():
@@ -150,11 +157,25 @@ def main() -> None:
     asr = load_stt("mlx-community/Qwen3-ASR-1.7B-8bit")
     chosen: dict[str, tuple[np.ndarray, int, dict]] = {}
 
-    def best_take(text: str, lang: str, instruct: str, slot: float, max_stretch: float, tag: str):
+    music, msr = sf.read(MUSIC)
+    music = music.mean(axis=1) if music.ndim == 2 else music
+
+    def under_music(x: np.ndarray, sr: int, at: float, extra_db: float) -> Path:
+        """The take as it will sit in the film: levelled, over the ducked score
+        (optionally louder than in the film, to keep only the clearest takes)."""
+        y = polish(x, sr, 1.0) * VO_GAIN
+        a = int(at * msr)
+        bed = music[a : a + len(y)]
+        y[: len(bed)] += bed * MUSIC_UNDER_VO * 10 ** (extra_db / 20)
+        path = CACHE / "_mixed.wav"
+        sf.write(path, y.astype(np.float32), SR)
+        return path
+
+    def best_take(text: str, lang: str, instruct: str, slot: float, max_stretch: float, tag: str, at: float, max_takes: int, extra_db: float):
         want = phonemes(text)
         best = None
         seed = 0
-        while seed < MAX_TAKES:
+        while seed < max_takes:
             for _ in range(TAKES):
                 mx.random.seed(1000 + seed)
                 res = list(tts.generate_custom_voice(text=text, speaker=voice["speaker"], language=lang, instruct=instruct))
@@ -163,8 +184,15 @@ def main() -> None:
                 x = trim(raw, sr)
                 path = CACHE / f"{tag}_{seed}.wav"
                 sf.write(path, x, sr)
-                heard = asr.generate(str(path), language="English" if lang == "english" else "Chinese").text
+                asr_lang = "English" if lang == "english" else "Chinese"
+                heard = asr.generate(str(path), language=asr_lang).text
                 err = edit_distance(want, phonemes(heard)) / max(1, len(want))
+                if err == 0:
+                    # A take must also survive the score it will play over.
+                    mixed = asr.generate(str(under_music(x, sr, at, extra_db)), language=asr_lang).text
+                    err = edit_distance(want, phonemes(mixed)) / max(1, len(want))
+                    if err:
+                        heard = f"{heard} / under music: {mixed}"
                 dur = len(x) / sr
                 stretch = max(1.0, dur / slot)
                 pause = longest_pause(x, sr)
@@ -185,6 +213,7 @@ def main() -> None:
         max_stretch = line.get("maxStretch", MAX_STRETCH)
         parts = line.get("parts") or [{"say": line["say"], "lang": line.get("lang", "chinese")}]
         pieces = []
+        offset = 0.0
         for i, part in enumerate(parts):
             lang = part.get("lang", "chinese")
             if part.get("instruct") or line.get("instruct"):
@@ -195,7 +224,8 @@ def main() -> None:
                 instruct = voice["instruct"] + ("，" + line["mood"] if line.get("mood") else "")
             # each part gets a share of the slot proportional to its length
             share = slot * len(phonemes(part["say"])) / max(1, len(phonemes(" ".join(p["say"] for p in parts))))
-            pieces.append(best_take(part["say"], lang, instruct, share, max_stretch, f"{line['id']}{i}"))
+            pieces.append(best_take(part["say"], lang, instruct, share, max_stretch, f"{line['id']}{i}", line["at"] + offset, part.get("maxTakes", line.get("maxTakes", MAX_TAKES)), part.get("robustDb", 0.0)))
+            offset += share
         sr = pieces[0][1]
         gap = np.zeros(int(sr * line.get("gap", 0.05)))
         x = np.concatenate([np.concatenate([p[0], gap]) if i < len(pieces) - 1 else p[0] for i, p in enumerate(pieces)])

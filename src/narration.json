@@ -1,9 +1,9 @@
 {
  "voice": {
   "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-bf16",
-  "speaker": "Uncle_Fu",
-  "instruct": "成熟稳重的男声旁白，语速偏快而干脆，吐字清晰，像科技产品宣传片的配音",
-  "instruct_en": "Deep, confident male narrator, native American English accent, calm and warm."
+  "speaker": "Dylan",
+  "instruct": "年轻、自信、清爽的男声旁白，语速偏快而干脆，吐字清晰，像科技产品宣传片的配音",
+  "instruct_en": "Young, confident, clear male narrator, crisp and energetic."
  },
  "lines": [
   {
@@ -22,7 +22,7 @@
     {
      "say": "Claude Code, Codex…",
      "lang": "english",
-     "instruct": "Deep, confident male narrator, native American English accent, calm, trailing off slightly."
+     "instruct": "Young, confident, clear male narrator, native American English accent, calm, trailing off slightly."
     }
    ],
    "gap": 0.04
@@ -63,7 +63,7 @@
    "say": "This is Multica.",
    "show": "none",
    "lang": "english",
-   "instruct": "Deep, confident male narrator, native American English accent, a quiet, assured reveal."
+   "instruct": "Young, confident, clear male narrator, native American English accent, a quiet, assured reveal."
   },
   {
    "id": "r2",
@@ -162,7 +162,9 @@
     {
      "say": "Multica?",
      "lang": "english",
-     "instruct": "Deep, confident male narrator, native American English accent, asking a question with gentle curiosity."
+     "instruct": "Young, confident, clear male narrator. Pronounce the brand name Multica clearly as MUL-ti-ka, three syllables, rising question intonation.",
+     "maxTakes": 80,
+     "robustDb": 6
     }
    ],
    "gap": 0.05
@@ -206,7 +208,7 @@
    "say": "Multica.",
    "show": "none",
    "lang": "english",
-   "instruct": "Deep, confident male narrator, native American English accent, a clean, assured brand sign-off."
+   "instruct": "Young, confident, clear male narrator, native American English accent, a clean, assured brand sign-off."
   }
  ]
 }

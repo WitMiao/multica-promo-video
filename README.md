@@ -48,7 +48,7 @@ npm run build   # 渲染并母带处理，输出 out/multica-promo.mp4
 | `audio/sfx.py` | 34 个音效：打字、弹出、点击、whoosh、冲击、提示音等 |
 | `audio/music.py` | 配乐：与分镜同一网格的编曲（开场张力 → 揭幕 → 律动 → 抽离 → 重建 → drop → 收尾） |
 | `src/narration.json` | 旁白稿：每句的起始时间、可用时长、念法、画面字幕写法，以及是否显示底部字幕 |
-| `audio/vo.py` | 旁白：每句生成多条候选，用 Qwen3-ASR 转写后按带声调拼音比对挑出发音正确、时长合适的一条，处理后用 Qwen3-ForcedAligner 对齐出逐字时间（驱动字幕高亮），写入 `public/vo/` 与 `src/vo-timing.json` |
+| `audio/vo.py` | 旁白（音色 Dylan）：每句生成多条候选，用 Qwen3-ASR 转写后按带声调拼音比对，单独听和叠上该处配乐后都要念对，再挑时长合适的一条；处理后用 Qwen3-ForcedAligner 对齐出逐字时间（驱动字幕高亮），写入 `public/vo/` 与 `src/vo-timing.json` |
 | `audio/cues.py` | 测量每个音效相对配乐的电平，用于校准 `Sfx.tsx` |
 | `scripts/finalize.sh` | 两遍 EBU R128 响度标准化到 −14 LUFS / −1.5 dBTP，封装 MP4 |
 | `scripts/stills.mjs`、`scripts/vsheet.sh` | 审片用：批量渲染静帧、从成片抽帧拼图 |
