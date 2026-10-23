@@ -2,7 +2,15 @@
 
 90 秒、1920×1080、60 fps 的产品宣传片。画面用 [Remotion](https://www.remotion.dev)（React）逐帧渲染，配乐与音效全部由 `audio/` 里的 Python 脚本从零合成，没有使用任何第三方音频素材。中文旁白由本机运行的开源模型 [Qwen3-TTS](https://github.com/QwenLM/Qwen3-TTS)（Apache-2.0）合成，不经过任何云端服务。
 
-片中的产品界面按 `packages/ui` 的设计 token 用 React 矢量重建，数据全部虚构（工作区 Nebula Labs、任务 NEB-xxx、成员林舟/王一/苏禾），不含任何真实项目或账号信息。
+片中的产品界面按 Multica `packages/ui` 的设计 token 用 React 矢量重建，数据全部虚构（工作区 Nebula Labs、任务 NEB-xxx、成员林舟/王一/苏禾），不含任何真实项目或账号信息。
+
+![海报](dist/poster.jpg)
+
+## 成品
+
+[`dist/multica-promo.mp4`](dist/multica-promo.mp4)：H.264 + AAC 320 kbps，响度 −14 LUFS / 峰值 −1.6 dBFS。
+
+本仓库从 [multica-ai/multica](https://github.com/multica-ai/multica) 的 `promo-video/` 目录导出，保留了原提交历史；另外附带了生成好的素材（`public/` 下的配乐、音效、旁白、字体子集、插画、颗粒纹理），克隆后不必重新合成即可渲染。`*.mp4` 与 `*.wav` 用 Git LFS 存放，克隆前先安装 `git-lfs`。
 
 ## 构建
 
@@ -12,7 +20,7 @@ npm run studio  # 在浏览器里逐帧预览、调整
 npm run build   # 渲染并母带处理，输出 out/multica-promo.mp4
 ```
 
-`setup` 只需运行一次（首次会下载约 5 GB 语音模型）；改了旁白稿 `src/narration.json` 后运行 `npm run voice`（可只传要重做的句子 id，如 `npm run voice -- p4 c2`），改了配乐或音效后运行 `npm run sound`，改了画面上的中文文案后重跑 `audio/.venv/bin/python scripts/subset-fonts.py`（CJK 字体按实际用字子集化）。
+本仓库已带齐生成素材，`npm install` 后直接 `npm run build` 即可出片；`setup` 会跳过已存在的插画与旁白，只有重新生成旁白才需要下载约 5 GB 语音模型。改了旁白稿 `src/narration.json` 后运行 `npm run voice`（可只传要重做的句子 id，如 `npm run voice -- p4 c2`），改了配乐或音效后运行 `npm run sound`，改了画面上的中文文案后重跑 `audio/.venv/bin/python scripts/subset-fonts.py`（CJK 字体按实际用字子集化）。
 
 ## 结构
 
@@ -33,6 +41,6 @@ npm run build   # 渲染并母带处理，输出 out/multica-promo.mp4
 
 ## 素材来源
 
-- 插画与 Logo：本仓库 `apps/web/public/images`、`apps/web/public/favicon.svg`
-- 智能体与渠道图标：本仓库 `packages/views` 中的官方图标组件；Docker、Kubernetes、Helm、GitHub、GitLab、Gitea、Forgejo 来自 [simple-icons](https://simpleicons.org)（CC0）
+- 插画与 Logo：Multica 仓库 `apps/web/public/images`、`apps/web/public/favicon.svg`
+- 智能体与渠道图标：Multica 仓库 `packages/views` 中的官方图标组件；Docker、Kubernetes、Helm、GitHub、GitLab、Gitea、Forgejo 来自 [simple-icons](https://simpleicons.org)（CC0）
 - 字体：Noto Serif SC、Noto Sans SC、Inter、Instrument Serif、Geist Mono，均为 SIL Open Font License
