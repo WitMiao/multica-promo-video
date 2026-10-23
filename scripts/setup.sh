@@ -19,15 +19,20 @@ fetch "geistmono/GeistMono%5Bwght%5D.ttf" GeistMono-VF.ttf
 cp .cache/fonts/{InstrumentSerif-Regular.ttf,InstrumentSerif-Italic.ttf,Inter-VF.ttf,GeistMono-VF.ttf} public/fonts/
 audio/.venv/bin/python scripts/subset-fonts.py
 
-# Brand illustrations come straight from the landing page.
-cp ../apps/web/public/images/landing-bg.webp ../apps/web/public/images/feature-bg-4.webp public/images/
+# Brand illustrations come straight from the landing page (inside the Multica
+# monorepo); a standalone copy of this project ships them already.
+[ -f public/images/landing-bg.webp ] || cp ../apps/web/public/images/landing-bg.webp public/images/
+[ -f public/images/feature-bg-4.webp ] || cp ../apps/web/public/images/feature-bg-4.webp public/images/
 
 audio/.venv/bin/python scripts/noise.py
 audio/.venv/bin/python audio/sfx.py
 audio/.venv/bin/python audio/music.py
 
 # Narration: local Qwen3-TTS / Qwen3-ASR on Apple Silicon (MLX). The first run
-# downloads about 5 GB of models into ~/.cache/huggingface.
-[ -x audio/.venv-tts/bin/python ] || python3 -m venv audio/.venv-tts
-audio/.venv-tts/bin/pip install -q mlx-audio soundfile scipy pedalboard pypinyin cn2an
-audio/.venv-tts/bin/python audio/vo.py
+# downloads about 5 GB of models into ~/.cache/huggingface. Skipped when the
+# rendered lines are already present; `npm run voice` regenerates them.
+if ! ls public/vo/*.wav >/dev/null 2>&1; then
+  [ -x audio/.venv-tts/bin/python ] || python3 -m venv audio/.venv-tts
+  audio/.venv-tts/bin/pip install -q mlx-audio soundfile scipy pedalboard pypinyin cn2an
+  audio/.venv-tts/bin/python audio/vo.py
+fi
