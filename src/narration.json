@@ -1,0 +1,212 @@
+{
+ "voice": {
+  "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-CustomVoice-bf16",
+  "speaker": "Uncle_Fu",
+  "instruct": "成熟稳重的男声旁白，语速偏快而干脆，吐字清晰，像科技产品宣传片的配音",
+  "instruct_en": "Deep, confident male narrator, native American English accent, calm and warm."
+ },
+ "lines": [
+  {
+   "id": "p1",
+   "at": 0.35,
+   "end": 3.5,
+   "say": "你已经在用 Claude Code、Codex。",
+   "caption": "你已经在用 Claude Code、Codex……",
+   "show": "caption",
+   "mood": "平静地陈述，略带一丝无奈",
+   "parts": [
+    {
+     "say": "你已经在用",
+     "lang": "chinese"
+    },
+    {
+     "say": "Claude Code, Codex…",
+     "lang": "english",
+     "instruct": "Deep, confident male narrator, native American English accent, calm, trailing off slightly."
+    }
+   ],
+   "gap": 0.04
+  },
+  {
+   "id": "p2",
+   "at": 3.4,
+   "end": 5.95,
+   "say": "每一个，都关在自己的窗口里。",
+   "show": "caption",
+   "mood": "平静地陈述，略带一丝无奈",
+   "maxStretch": 1.2
+  },
+  {
+   "id": "p3",
+   "at": 6.0,
+   "end": 9.65,
+   "say": "会话一关就全忘，同一件事讲到第4遍。",
+   "show": "caption",
+   "mood": "略带紧迫感，有些无奈",
+   "maxStretch": 1.2,
+   "caption": "会话一关就全忘，同一件事讲到[第 4 遍]。"
+  },
+  {
+   "id": "p5",
+   "at": 9.7,
+   "end": 11.62,
+   "say": "智能体越多，你越忙。",
+   "caption": "智能体越多，[你越忙]。",
+   "show": "caption",
+   "mood": "紧迫、加快",
+   "maxStretch": 1.2
+  },
+  {
+   "id": "r1",
+   "at": 12.8,
+   "end": 14.15,
+   "say": "This is Multica.",
+   "show": "none",
+   "lang": "english",
+   "instruct": "Deep, confident male narrator, native American English accent, a quiet, assured reveal."
+  },
+  {
+   "id": "r2",
+   "at": 14.35,
+   "end": 17.9,
+   "say": "让人和 AI 智能体，成为一支真正的团队。",
+   "show": "none",
+   "mood": "自信、温暖、有力量"
+  },
+  {
+   "id": "b1",
+   "at": 18.75,
+   "end": 22.8,
+   "say": "人和智能体，在同一块看板上。",
+   "caption": "人和智能体，在[同一块看板]上。",
+   "show": "caption"
+  },
+  {
+   "id": "a1",
+   "at": 24.2,
+   "end": 27.25,
+   "say": "像给同事派活一样，派给智能体。",
+   "caption": "像给同事派活一样，[派给智能体]。",
+   "show": "caption"
+  },
+  {
+   "id": "a2",
+   "at": 27.45,
+   "end": 31.6,
+   "say": "它自己接手、边做边汇报，做完交给你验收。",
+   "caption": "它自己接手、边做边汇报，\n做完交给你[验收]。",
+   "show": "caption"
+  },
+  {
+   "id": "f1",
+   "at": 32.3,
+   "end": 35.7,
+   "say": "27款智能体 CLI，全都能招进来。",
+   "show": "sub"
+  },
+  {
+   "id": "f2",
+   "at": 36.3,
+   "end": 39.7,
+   "say": "工位就在你自己的机器上，代码不出门。",
+   "show": "sub"
+  },
+  {
+   "id": "f3",
+   "at": 40.3,
+   "end": 43.7,
+   "say": "人和智能体混编成小队，经验全队复用。",
+   "show": "sub"
+  },
+  {
+   "id": "f4",
+   "at": 44.3,
+   "end": 47.7,
+   "say": "每一步都有记录，运行中还能随时插话。",
+   "show": "sub"
+  },
+  {
+   "id": "f5",
+   "at": 48.3,
+   "end": 51.7,
+   "say": "每天早上九点，站会摘要自动生成。",
+   "show": "sub"
+  },
+  {
+   "id": "f6",
+   "at": 52.3,
+   "end": 55.7,
+   "say": "交付先进审核，上不上线，由你拍板。",
+   "show": "sub"
+  },
+  {
+   "id": "f7",
+   "at": 56.3,
+   "end": 59.7,
+   "say": "源码公开，整套都能自托管。",
+   "show": "sub"
+  },
+  {
+   "id": "c1",
+   "at": 60.15,
+   "end": 63.9,
+   "say": "终端和客户端都有了，为什么还需要 Multica？",
+   "caption": "终端和客户端都有了，\n为什么还需要 [Multica]？",
+   "show": "caption",
+   "mood": "提出问题，带一点好奇",
+   "parts": [
+    {
+     "say": "终端和客户端都有了，为什么还需要",
+     "lang": "chinese"
+    },
+    {
+     "say": "Multica?",
+     "lang": "english",
+     "instruct": "Deep, confident male narrator, native American English accent, asking a question with gentle curiosity."
+    }
+   ],
+   "gap": 0.05
+  },
+  {
+   "id": "c2",
+   "at": 64.3,
+   "end": 72.1,
+   "say": "它们是个人工具；这里是整个团队的工作区：跨厂商混编、上下文共享、跑在你自己的机器上。",
+   "show": "sub",
+   "mood": "平稳、清楚，节奏紧凑"
+  },
+  {
+   "id": "o1",
+   "at": 72.25,
+   "end": 75.3,
+   "say": "不是替代，而是编排。",
+   "show": "none",
+   "mood": "笃定、有分量"
+  },
+  {
+   "id": "s1",
+   "at": 76.6,
+   "end": 79.8,
+   "say": "一个工作区，装下整支 AI 团队。",
+   "show": "none",
+   "mood": "激昂、有力量"
+  },
+  {
+   "id": "s2",
+   "at": 80.5,
+   "end": 83.8,
+   "say": "你的下一批员工，不是人类。",
+   "show": "none",
+   "mood": "低沉、有分量，放慢一点"
+  },
+  {
+   "id": "e1",
+   "at": 85.1,
+   "end": 87.4,
+   "say": "Multica.",
+   "show": "none",
+   "lang": "english",
+   "instruct": "Deep, confident male narrator, native American English accent, a clean, assured brand sign-off."
+  }
+ ]
+}

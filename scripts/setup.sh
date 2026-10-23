@@ -25,3 +25,9 @@ cp ../apps/web/public/images/landing-bg.webp ../apps/web/public/images/feature-b
 audio/.venv/bin/python scripts/noise.py
 audio/.venv/bin/python audio/sfx.py
 audio/.venv/bin/python audio/music.py
+
+# Narration: local Qwen3-TTS / Qwen3-ASR on Apple Silicon (MLX). The first run
+# downloads about 5 GB of models into ~/.cache/huggingface.
+[ -x audio/.venv-tts/bin/python ] || python3 -m venv audio/.venv-tts
+audio/.venv-tts/bin/pip install -q mlx-audio soundfile scipy pedalboard pypinyin cn2an
+audio/.venv-tts/bin/python audio/vo.py

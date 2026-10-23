@@ -7,6 +7,8 @@ import { BuildMark } from "../components/Logo";
 import { Sfx } from "../components/Sfx";
 import { ease, mix, rnd, sp, tw } from "../lib/anim";
 import { C, F } from "../theme";
+import { SCENES } from "../timeline";
+import { voWindow } from "../vo";
 
 const SPARKS = Array.from({ length: 46 }, (_, i) => ({
   a: rnd(`sa${i}`, 0, Math.PI * 2),
@@ -146,7 +148,7 @@ export const S2Reveal: React.FC = () => {
         <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", paddingTop: 170 }}>
           <Kinetic
             text={"让人和 AI 智能体\n成为一支[真正的团队]。"}
-            start={150}
+            start={voWindow("r2", SCENES.reveal.from).start}
             align="center"
             stagger={2.6}
             dur={30}

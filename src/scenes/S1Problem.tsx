@@ -3,6 +3,7 @@ import { AbsoluteFill, Sequence, useCurrentFrame, useVideoConfig } from "remotio
 import { Backdrop, Grain, Vignette } from "../components/Atmos";
 import { ClientWindow } from "../components/ClientWindow";
 import { LowerCaption } from "../components/Caption";
+import { tokenTime, vo, voWindow } from "../vo";
 import { Sfx } from "../components/Sfx";
 import { TermLine, Terminal } from "../components/Terminal";
 import { LogoTile } from "../components/ui";
@@ -175,6 +176,22 @@ const HERO_LINES: TermLine[] = [
   L("  ✓ ok   internal/webhook  0.41s", 196, Infinity, { color: GREEN }),
 ];
 
+// Captions follow the narration: each appears as its line starts and gives way
+// to the next one; the last must be gone before the smash cut at frame 700.
+const CAPTION_IDS = ["p1", "p2", "p3", "p5"];
+const CAPTIONS = CAPTION_IDS.map((id, i) => {
+  const w = voWindow(id, 0, 0.3);
+  const next = CAPTION_IDS[i + 1];
+  return {
+    id,
+    text: vo(id).caption,
+    start: w.start,
+    end: next ? Math.min(w.end, voWindow(next, 0).start + 6) : 706,
+  };
+});
+// The "4th time" stamp slams down as the narrator says "第".
+const STAMP_AT = Math.round((vo("p3").at + (tokenTime("p3", "第") ?? 2.9)) * 60);
+
 const RED_HL: React.CSSProperties = {
   backgroundImage: "linear-gradient(100deg, #ffd0c8 0%, #ff6b5e 60%, #ef5350 100%)",
   WebkitBackgroundClip: "text",
@@ -251,7 +268,7 @@ export const S1Problem: React.FC = () => {
 
   const heroWipe = tw(f, 372, 22, 0, 1, ease.in);
   const heroFresh = f >= 430;
-  const stamp = sp(f, fps, 548, { damping: 11, stiffness: 260 });
+  const stamp = sp(f, fps, STAMP_AT, { damping: 11, stiffness: 260 });
 
   return (
     <AbsoluteFill style={{ backgroundColor: C.bg, overflow: "hidden" }}>
@@ -309,14 +326,14 @@ export const S1Problem: React.FC = () => {
               </div>
             ) : null}
           </Terminal>
-          {f >= 548 ? (
+          {f >= STAMP_AT ? (
             <div
               style={{
                 position: "absolute",
                 right: -70,
                 top: -58,
                 transform: `rotate(-9deg) scale(${mix(2.4, 1, stamp)})`,
-                opacity: Math.min(1, (f - 548) / 4),
+                opacity: Math.min(1, (f - STAMP_AT) / 4),
                 padding: "10px 22px",
                 border: `4px solid ${C.red}`,
                 borderRadius: 12,
@@ -376,11 +393,9 @@ export const S1Problem: React.FC = () => {
       />
       <Vignette strength={0.8} />
 
-      <LowerCaption text="你已经在用 Claude Code、Codex……" start={22} end={230} />
-      <LowerCaption text="每一个，都关在自己的窗口里。" start={240} end={352} />
-      <LowerCaption text="会话一关，什么都不记得。" start={362} end={472} />
-      <LowerCaption text="同一段上下文，今天已经讲到[第 4 遍]。" start={482} end={594} />
-      <LowerCaption text="智能体越加越多，[你越忙]。" start={604} end={706} size={72} hl={RED_HL} />
+      {CAPTIONS.map((c) => (
+        <LowerCaption key={c.id} text={c.text} start={c.start} end={c.end} size={c.id === "p5" ? 72 : 62} hl={c.id === "p5" ? RED_HL : undefined} />
+      ))}
 
       <Grain opacity={0.08} />
       <AbsoluteFill style={{ backgroundColor: "#000", opacity: blackout }} />
@@ -398,7 +413,7 @@ export const S1Problem: React.FC = () => {
         <Sfx key={`r${w.key}`} at={w.at} name="pop" vol={0.45} />
       ))}
       <Sfx at={482} name="type_long" vol={0.4} />
-      <Sfx at={548} name="stamp" vol={0.45} />
+      <Sfx at={STAMP_AT} name="stamp" vol={0.45} />
       {CHAOS.filter((_, i) => i % 2 === 0).map((w) => (
         <Sfx key={`x${w.key}`} at={w.at} name="pop" vol={0.3} />
       ))}

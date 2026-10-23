@@ -1,7 +1,10 @@
 import React from "react";
 import { LightLeak } from "@remotion/light-leaks";
 import { AbsoluteFill, Html5Audio, Sequence, staticFile } from "remotion";
-import { SCENES } from "./timeline";
+import { FPS, SCENES } from "./timeline";
+import { SceneStart } from "./components/Sfx";
+import { Subtitles } from "./components/Subtitles";
+import { VO_LINES, musicDuck } from "./vo";
 import { S1Problem } from "./scenes/S1Problem";
 import { S2Reveal } from "./scenes/S2Reveal";
 import { S3Board } from "./scenes/S3Board";
@@ -44,15 +47,24 @@ const LEAKS: Array<{ at: number; seed: number; hue: number; opacity: number }> =
   { at: SCENES.endcard.from, seed: 11, hue: 20, opacity: 0.3 },
 ];
 const LEAK_DUR = 56;
+// Narration files are levelled by audio/vo.py; this sets them against the bed.
+const VO_GAIN = 1.41;
 
 export const Promo: React.FC = () => (
   <AbsoluteFill style={{ backgroundColor: "#05070b" }}>
-    <Html5Audio src={staticFile("audio/music.wav")} volume={0.6} />
+    <Html5Audio src={staticFile("audio/music.wav")} volume={(f) => 0.6 * musicDuck(f)} />
+    {VO_LINES.map((l) => (
+      <Sequence key={`vo-${l.id}`} from={Math.round(l.at * FPS)} durationInFrames={Math.ceil((l.dur + 0.1) * FPS)} layout="none" name={`vo:${l.id}`}>
+        <Html5Audio src={staticFile(`vo/${l.id}.wav`)} volume={VO_GAIN} />
+      </Sequence>
+    ))}
     {(Object.keys(SCENE_COMPONENTS) as Array<keyof typeof SCENES>).map((k) => {
       const C = SCENE_COMPONENTS[k]!;
       return (
         <Sequence key={k} from={SCENES[k].from} durationInFrames={SCENES[k].dur} name={k}>
-          <C />
+          <SceneStart.Provider value={SCENES[k].from}>
+            <C />
+          </SceneStart.Provider>
         </Sequence>
       );
     })}
@@ -63,5 +75,6 @@ export const Promo: React.FC = () => (
         </AbsoluteFill>
       </Sequence>
     ))}
+    <Subtitles />
   </AbsoluteFill>
 );

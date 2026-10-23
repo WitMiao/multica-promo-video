@@ -8,7 +8,8 @@
     "studio": "remotion studio src/index.ts",
     "build": "bash scripts/build.sh",
     "sound": "audio/.venv/bin/python audio/sfx.py && audio/.venv/bin/python audio/music.py",
-    "typecheck": "tsc --noEmit -p ."
+    "typecheck": "tsc --noEmit -p .",
+    "voice": "audio/.venv-tts/bin/python audio/vo.py"
   },
   "dependencies": {
     "@remotion/bundler": "4.0.538",

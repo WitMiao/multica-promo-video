@@ -5,12 +5,14 @@ import { Backdrop, Grain, Vignette } from "../components/Atmos";
 import { Board, colX, layout } from "../components/Board";
 import { CamState, Stage3D, lerpCam } from "../components/Cam";
 import { LowerCaption } from "../components/Caption";
+import { vo, voWindow } from "../vo";
 import { Sfx } from "../components/Sfx";
 import { AGENTS, AppWindow, Avatar, HUMANS, Who } from "../components/ui";
 import { BOARD_CARDS, COLUMNS, WORKING_AVATARS } from "../data";
 import { ease, mix, sp, tw } from "../lib/anim";
 import { C, F } from "../theme";
 import { ASSIGN_CAM, toWin } from "./shared";
+import { SCENES } from "../timeline";
 
 const CAM_IN: CamState = { rx: 52, ry: -12, rz: -10, s: 0.55, tx: 0, ty: 520 };
 const CAM_SETTLE: CamState = { rx: 13, ry: -9, rz: -2.5, s: 0.8, tx: 0, ty: -78 };
@@ -99,7 +101,7 @@ const S3BoardInner: React.FC = () => {
         <Callout who={AGENTS.qwen} text="Qwen 提交了审核" x={toWin(colX(3), 0).x + 50} y={360} at={144} f={f} fps={fps} />
       </Stage3D>
 
-      <LowerCaption text="人和智能体，在[同一块看板]上。" start={44} end={292} size={66} y={64} band={false} />
+      <LowerCaption text={vo("b1").caption} start={voWindow("b1", SCENES.board.from).start} end={292} size={66} y={64} band={false} />
       <Vignette strength={0.55} />
       <Grain opacity={0.06} />
 

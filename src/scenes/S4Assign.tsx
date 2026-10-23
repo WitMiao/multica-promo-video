@@ -25,6 +25,8 @@ import { BOARD_CARDS, COLUMNS, HERO_ID, WORKING_AVATARS } from "../data";
 import { ease, mix, sp, tw } from "../lib/anim";
 import { C, F } from "../theme";
 import { ASSIGN_CAM, toWin } from "./shared";
+import { SCENES } from "../timeline";
+import { vo, voWindow } from "../vo";
 
 const U = C.ui;
 
@@ -345,7 +347,7 @@ export const S4Assign: React.FC = () => {
 
       <DetailPanel f={f} fps={fps} status={status} statusPulse={statusPulse} />
 
-      <LowerCaption text="像给同事派活一样，[派给智能体]。" start={12} end={176} size={56} variant="plate" position="top" y={44} />
+      <LowerCaption text={vo("a1").caption} start={voWindow("a1", SCENES.assign.from).start} end={176} size={56} variant="plate" position="top" y={44} />
       <AbsoluteFill style={{ pointerEvents: "none" }}>
         <AbsoluteFill
           style={{
@@ -355,8 +357,8 @@ export const S4Assign: React.FC = () => {
         />
         <div style={{ position: "absolute", left: 96, bottom: 110 }}>
           <Kinetic
-            text={"它自己接手、边做边汇报，\n做完交给你[验收]。"}
-            start={206}
+            text={vo("a2").caption}
+            start={voWindow("a2", SCENES.assign.from).start}
             end={476}
             stagger={1.8}
             lineGap={0.2}

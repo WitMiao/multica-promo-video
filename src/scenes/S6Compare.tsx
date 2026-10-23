@@ -3,6 +3,7 @@ import { Check, Minus, SquareTerminal, User, Users } from "lucide-react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { Backdrop, Grain, Vignette } from "../components/Atmos";
 import { ClientWindow } from "../components/ClientWindow";
+import { vo, voWindow } from "../vo";
 import { Board, layout } from "../components/Board";
 import { HL_STYLE } from "../components/Caption";
 import { Kinetic } from "../components/Kinetic";
@@ -42,13 +43,13 @@ export const S6CompareIntro: React.FC = () => {
         <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
           <div style={{ transform: `translateY(${mix(0, -380, q)}px) scale(${mix(1, 0.62, q)})` }}>
             <Kinetic
-              text={"Claude Code、Codex 的终端和桌面客户端都很强，\n为什么还需要 [Multica]？"}
-              start={4}
+              text={vo("c1").caption}
+              start={voWindow("c1", SCENES.compareIntro.from).start}
               align="center"
               stagger={1.8}
               lineGap={0.16}
               exit="none"
-              style={{ fontFamily: F.serif, fontWeight: 700, fontSize: 74, color: C.ink, lineHeight: 1.2 }}
+              style={{ fontFamily: F.serif, fontWeight: 700, fontSize: 84, color: C.ink, lineHeight: 1.2 }}
               hlStyle={HL_STYLE}
             />
           </div>

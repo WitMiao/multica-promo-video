@@ -1,6 +1,6 @@
 # Multica 宣传片
 
-90 秒、1920×1080、60 fps 的产品宣传片。画面用 [Remotion](https://www.remotion.dev)（React）逐帧渲染，配乐与音效全部由 `audio/` 里的 Python 脚本从零合成，没有使用任何第三方音频素材。
+90 秒、1920×1080、60 fps 的产品宣传片。画面用 [Remotion](https://www.remotion.dev)（React）逐帧渲染，配乐与音效全部由 `audio/` 里的 Python 脚本从零合成，没有使用任何第三方音频素材。中文旁白由本机运行的开源模型 [Qwen3-TTS](https://github.com/QwenLM/Qwen3-TTS)（Apache-2.0）合成，不经过任何云端服务。
 
 片中的产品界面按 `packages/ui` 的设计 token 用 React 矢量重建，数据全部虚构（工作区 Nebula Labs、任务 NEB-xxx、成员林舟/王一/苏禾），不含任何真实项目或账号信息。
 
@@ -12,7 +12,7 @@ npm run studio  # 在浏览器里逐帧预览、调整
 npm run build   # 渲染并母带处理，输出 out/multica-promo.mp4
 ```
 
-`setup` 只需运行一次；改了配乐或音效后运行 `npm run sound`，改了画面上的中文文案后重跑 `audio/.venv/bin/python scripts/subset-fonts.py`（CJK 字体按实际用字子集化）。
+`setup` 只需运行一次（首次会下载约 5 GB 语音模型）；改了旁白稿 `src/narration.json` 后运行 `npm run voice`（可只传要重做的句子 id，如 `npm run voice -- p4 c2`），改了配乐或音效后运行 `npm run sound`，改了画面上的中文文案后重跑 `audio/.venv/bin/python scripts/subset-fonts.py`（CJK 字体按实际用字子集化）。
 
 ## 结构
 
@@ -25,6 +25,8 @@ npm run build   # 渲染并母带处理，输出 out/multica-promo.mp4
 | `audio/dsp.py` | 振荡器、包络、零延迟状态变量滤波器（numba）、效果器 |
 | `audio/sfx.py` | 34 个音效：打字、弹出、点击、whoosh、冲击、提示音等 |
 | `audio/music.py` | 配乐：与分镜同一网格的编曲（开场张力 → 揭幕 → 律动 → 抽离 → 重建 → drop → 收尾） |
+| `src/narration.json` | 旁白稿：每句的起始时间、可用时长、念法、画面字幕写法，以及是否显示底部字幕 |
+| `audio/vo.py` | 旁白：每句生成多条候选，用 Qwen3-ASR 转写后按带声调拼音比对挑出发音正确、时长合适的一条，处理后用 Qwen3-ForcedAligner 对齐出逐字时间（驱动字幕高亮），写入 `public/vo/` 与 `src/vo-timing.json` |
 | `audio/cues.py` | 测量每个音效相对配乐的电平，用于校准 `Sfx.tsx` |
 | `scripts/finalize.sh` | 两遍 EBU R128 响度标准化到 −14 LUFS / −1.5 dBTP，封装 MP4 |
 | `scripts/stills.mjs`、`scripts/vsheet.sh` | 审片用：批量渲染静帧、从成片抽帧拼图 |

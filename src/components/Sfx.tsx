@@ -1,5 +1,9 @@
-import React from "react";
+import React, { createContext, useContext } from "react";
 import { Html5Audio, Sequence, staticFile } from "remotion";
+import { sfxDuck } from "../vo";
+
+/** Film frame at which the enclosing scene starts, so effects can duck under narration. */
+export const SceneStart = createContext(0);
 
 // Per-sound trim, measured against the music bed with audio/cues.py so each
 // family sits at a consistent level over the score (music plays at 0.6).
@@ -41,8 +45,13 @@ export const Sfx: React.FC<{ at: number; name: string; vol?: number; dur?: numbe
   name,
   vol = 1,
   dur,
-}) => (
-  <Sequence from={Math.round(at)} durationInFrames={dur} layout="none" name={`sfx:${name}`}>
-    <Html5Audio src={staticFile(`sfx/${name}.wav`)} volume={Math.min(1, vol * gainFor(name))} />
-  </Sequence>
-);
+}) => {
+  const sceneStart = useContext(SceneStart);
+  const from = Math.round(at);
+  const base = Math.min(1, vol * gainFor(name));
+  return (
+    <Sequence from={from} durationInFrames={dur} layout="none" name={`sfx:${name}`}>
+      <Html5Audio src={staticFile(`sfx/${name}.wav`)} volume={(f) => base * sfxDuck(sceneStart + from + f)} />
+    </Sequence>
+  );
+};
