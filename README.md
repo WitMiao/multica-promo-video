@@ -8,7 +8,7 @@
 
 ## 成品
 
-[`dist/multica-promo.mp4`](dist/multica-promo.mp4)：H.264 + AAC 320 kbps，响度 −14 LUFS / 峰值 −1.6 dBFS。
+[`dist/multica-promo.mp4`](dist/multica-promo.mp4)：H.264 + AAC 320 kbps，响度 −14 LUFS / 峰值 −1.4 dBFS，旁白音色 Dylan。
 
 本仓库从 [multica-ai/multica](https://github.com/multica-ai/multica) 的 `promo-video/` 目录导出，保留了原提交历史；另外附带了生成好的素材（`public/` 下的配乐、音效、旁白、字体子集、插画、颗粒纹理），克隆后不必重新合成即可渲染。`*.mp4` 与 `*.wav` 用 Git LFS 存放，克隆前先安装 `git-lfs`。
 
@@ -18,8 +18,8 @@
 
 | 文件 | 音色 |
 | --- | --- |
-| [1-Uncle_Fu-男-低沉醇厚(当前).wav](<voice-samples/1-Uncle_Fu-男-低沉醇厚(当前).wav>) | 男声，低沉醇厚；成片当前使用 |
-| [2-Dylan-男-年轻京腔.wav](voice-samples/2-Dylan-男-年轻京腔.wav) | 男声，年轻，带京腔 |
+| [1-Uncle_Fu-男-低沉醇厚.wav](voice-samples/1-Uncle_Fu-男-低沉醇厚.wav) | 男声，低沉醇厚 |
+| [2-Dylan-男-年轻京腔(当前).wav](<voice-samples/2-Dylan-男-年轻京腔(当前).wav>) | 男声，年轻，带京腔；成片当前使用 |
 | [3-Eric-男-明亮川味.wav](voice-samples/3-Eric-男-明亮川味.wav) | 男声，明亮，带川味 |
 | [4-Vivian-女.wav](voice-samples/4-Vivian-女.wav) | 女声 |
 | [5-Serena-女.wav](voice-samples/5-Serena-女.wav) | 女声 |
